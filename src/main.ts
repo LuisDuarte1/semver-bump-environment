@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import { getConfig } from './config'
 
 /**
  * The main function for the action.
@@ -6,6 +7,7 @@ import * as core from '@actions/core'
  */
 export async function run(): Promise<void> {
   try {
+    const config = getConfig()
     core.debug('hello world')
   } catch (error) {
     // Fail the workflow run if an error occurs
