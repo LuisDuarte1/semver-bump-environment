@@ -1,11 +1,11 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'SemVer Bump Enviroment'
+description: 'Automatically bumps and syncs semver version for applications that have multiple enviroments.'
+author: 'Luís Duarte (LuisDuarte1)'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'git-merge'
+  color: 'blue'
 
 # Define your inputs here.
 inputs:
