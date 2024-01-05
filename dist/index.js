@@ -6934,7 +6934,9 @@ exports.configSchema = zod_1.default
 })
     .refine(data => (data.currentEnvironment === 'staging' &&
     data.stagingVersion !== undefined) ||
-    data.currentEnvironment === 'production');
+    data.currentEnvironment === 'production', {
+    message: 'You must define a staging version if the current environment is staging'
+});
 function getConfig() {
     return exports.configSchema.parse({
         currentEnviroment: core.getInput('current_environment'),
