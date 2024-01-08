@@ -1,5 +1,5 @@
 name: 'SemVer Bump Environment'
-description: 'Automatically bumps and syncs semver version for applications that have multiple environments. It also validates if the input versions are valid.'
+description: 'Automatically bumps and syncs semver version for applications that have multiple environments.'
 author: 'Luís Duarte (LuisDuarte1)'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
