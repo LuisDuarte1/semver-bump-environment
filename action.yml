@@ -16,7 +16,7 @@ inputs:
     description: "Current production environment version. It's always required."
     required: true
   bump_type:
-    description: "Type of bump according to the SemVer spec. Can be either 'major', 'minor', 'patch' or 'pre-release' or any of the node-semver release types https://github.com/npm/node-semver"
+    description: "Type of bump according to the SemVer spec. Can be either 'major', 'minor', 'patch' or 'prerelease' or any of the node-semver release types https://github.com/npm/node-semver"
     required: true
   staging_version:
     description: "Current staging environment version. It's only used if the current_environment is also staging."
@@ -28,7 +28,7 @@ inputs:
     description: "Custom staging identifier string. Defaults to 'beta'. "
     required: false
   staging_bump_type_older_than_prod:
-    description: "Staging bump type if the staging version is older than the production_version. Defaults to 'minor'"
+    description: "Staging bump type if the staging version is older than the production_version. Defaults to 'preminor'"
     required: false
 # Define your outputs here.
 outputs:

@@ -5,11 +5,29 @@ export const configSchema = z
   .object({
     currentEnvironment: z.enum(['production', 'staging']),
     productionVersion: z.string(),
-    bumpType: z.enum(['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease']),
+    bumpType: z.enum([
+      'major',
+      'premajor',
+      'minor',
+      'preminor',
+      'patch',
+      'prepatch',
+      'prerelease'
+    ]),
     stagingVersion: z.string().optional(),
     buildMetadata: z.string().optional(),
     stagingIdentifier: z.string().default('beta'),
-    stagingBumpTypeOlderThanProd: z.enum(['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease']).default('minor')
+    stagingBumpTypeOlderThanProd: z
+      .enum([
+        'major',
+        'premajor',
+        'minor',
+        'preminor',
+        'patch',
+        'prepatch',
+        'prerelease'
+      ])
+      .default('preminor')
   })
   .refine(
     data =>
@@ -24,12 +42,21 @@ export const configSchema = z
 
 export function getConfig(): z.infer<typeof configSchema> {
   return configSchema.parse({
-    currentEnviroment: core.getInput('current_environment'),
+    currentEnvironment: core.getInput('current_environment'),
     productionVersion: core.getInput('production_version'),
     bumpType: core.getInput('bump_type'),
     stagingVersion: core.getInput('staging_version'),
-    buildMetadata: core.getInput('build_metadata'),
-    stagingIdentifier: core.getInput('staging_identifier'),
-    stagingBumpTypeOlderThanProd: core.getInput('staging_bump_type_older_than_prod')
+    buildMetadata:
+      core.getInput('build_metadata') === ''
+        ? undefined
+        : core.getInput('build_metadata'),
+    stagingIdentifier:
+      core.getInput('staging_identifier') === ''
+        ? undefined
+        : core.getInput('staging_identifier'),
+    stagingBumpTypeOlderThanProd:
+      core.getInput('staging_bump_type_older_than_prod') === ''
+        ? undefined
+        : core.getInput('staging_bump_type_older_than_prod')
   })
 }

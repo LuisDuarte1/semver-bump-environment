@@ -47,11 +47,23 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Local Action
-        id: test-action
+      - name: Test Action - Simple bump
+        id: test-action1
         uses: ./
-
-
+        with:
+          current_environment: production
+          production_version: "1.2.0"
+          bump_type: patch
       - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+        run: echo "${{ steps.test-action1.outputs.new_version }}"
+
+      - name: Test Action - Staging older than production
+        id: test-action2
+        uses: ./
+        with:
+          current_environment: staging
+          production_version: "1.2.0"
+          staging_version: 1.2.0-beta.2
+          bump_type: prerelease
+      - name: Print Output
+        run: echo "${{ steps.test-action2.outputs.new_version }}"

@@ -10183,10 +10183,10 @@ function bumpStaging(config) {
     if (stagingSemVer === null) {
         throw Error(`Could not parse SemVer ${config.stagingVersion}`);
     }
-    if ((0, semver_1.compare)(productionSemVer, stagingSemVer) == 1) {
-        return productionSemVer.inc(config.stagingBumpTypeOlderThanProd).inc('prerelease', config.stagingIdentifier);
+    if ((0, semver_1.compare)(productionSemVer, stagingSemVer) === 1) {
+        return productionSemVer.inc(config.stagingBumpTypeOlderThanProd, config.stagingIdentifier);
     }
-    return stagingSemVer.inc(config.bumpType);
+    return stagingSemVer.inc(config.bumpType, config.stagingIdentifier);
 }
 exports.bumpStaging = bumpStaging;
 
@@ -10232,11 +10232,29 @@ exports.configSchema = zod_1.default
     .object({
     currentEnvironment: zod_1.default.enum(['production', 'staging']),
     productionVersion: zod_1.default.string(),
-    bumpType: zod_1.default.enum(['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease']),
+    bumpType: zod_1.default.enum([
+        'major',
+        'premajor',
+        'minor',
+        'preminor',
+        'patch',
+        'prepatch',
+        'prerelease'
+    ]),
     stagingVersion: zod_1.default.string().optional(),
     buildMetadata: zod_1.default.string().optional(),
     stagingIdentifier: zod_1.default.string().default('beta'),
-    stagingBumpTypeOlderThanProd: zod_1.default.enum(['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease']).default('minor')
+    stagingBumpTypeOlderThanProd: zod_1.default
+        .enum([
+        'major',
+        'premajor',
+        'minor',
+        'preminor',
+        'patch',
+        'prepatch',
+        'prerelease'
+    ])
+        .default('preminor')
 })
     .refine(data => (data.currentEnvironment === 'staging' &&
     data.stagingVersion !== undefined) ||
@@ -10245,13 +10263,19 @@ exports.configSchema = zod_1.default
 });
 function getConfig() {
     return exports.configSchema.parse({
-        currentEnviroment: core.getInput('current_environment'),
+        currentEnvironment: core.getInput('current_environment'),
         productionVersion: core.getInput('production_version'),
         bumpType: core.getInput('bump_type'),
         stagingVersion: core.getInput('staging_version'),
-        buildMetadata: core.getInput('build_metadata'),
-        stagingIdentifier: core.getInput('staging_identifier'),
-        stagingBumpTypeOlderThanProd: core.getInput('staging_bump_type_older_than_prod')
+        buildMetadata: core.getInput('build_metadata') === ''
+            ? undefined
+            : core.getInput('build_metadata'),
+        stagingIdentifier: core.getInput('staging_identifier') === ''
+            ? undefined
+            : core.getInput('staging_identifier'),
+        stagingBumpTypeOlderThanProd: core.getInput('staging_bump_type_older_than_prod') === ''
+            ? undefined
+            : core.getInput('staging_bump_type_older_than_prod')
     });
 }
 exports.getConfig = getConfig;
@@ -10301,10 +10325,10 @@ async function run() {
         const config = (0, config_1.getConfig)();
         let newVersionSemVer;
         switch (config.currentEnvironment) {
-            case "production":
+            case 'production':
                 newVersionSemVer = (0, bump_1.bumpProduction)(config);
                 break;
-            case "staging":
+            case 'staging':
                 newVersionSemVer = (0, bump_1.bumpStaging)(config);
                 break;
         }
