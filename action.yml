@@ -1,23 +1,39 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'SemVer Bump Environment'
+description: 'Automatically bumps and syncs semver version for applications that have multiple environments. It also validates if the input versions are valid.'
+author: 'Luís Duarte (LuisDuarte1)'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'git-merge'
+  color: 'blue'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  current_environment:
+    description: 'Current environment that the action is running on. Can be either "staging" or "production"'
     required: true
-    default: '1000'
-
+  production_version:
+    description: "Current production environment version. It's always required."
+    required: true
+  bump_type:
+    description: "Type of bump according to the SemVer spec. Can be either 'major', 'minor', 'patch' or 'prerelease' or any of the node-semver release types https://github.com/npm/node-semver"
+    required: true
+  staging_version:
+    description: "Current staging environment version. It's only used if the current_environment is also staging."
+    required: false
+  build_metadata:
+    description: "Optional build metadata information that is appended to the SemVer version"
+    required: false
+  staging_identifier:
+    description: "Custom staging identifier string. Defaults to 'beta'. "
+    required: false
+  staging_bump_type_older_than_prod:
+    description: "Staging bump type if the staging version is older than the production_version. Defaults to 'preminor'"
+    required: false
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  new_version:
+    description: "Returns the bumped new version"
 
 runs:
   using: node20

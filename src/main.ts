@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { getConfig } from './config'
+import { bumpProduction, bumpStaging } from './bump'
+import { SemVer } from 'semver'
 
 /**
  * The main function for the action.
@@ -7,18 +9,21 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const config = getConfig()
+    let newVersionSemVer: SemVer
+    switch (config.currentEnvironment) {
+      case 'production':
+        newVersionSemVer = bumpProduction(config)
+        break
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
-
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+      case 'staging':
+        newVersionSemVer = bumpStaging(config)
+        break
+    }
+    if (config.buildMetadata !== undefined) {
+      newVersionSemVer.version += `+${config.buildMetadata}`
+    }
+    core.setOutput('new_version', newVersionSemVer.version)
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
