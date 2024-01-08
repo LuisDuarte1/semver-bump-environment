@@ -5,9 +5,11 @@ export const configSchema = z
   .object({
     currentEnvironment: z.enum(['production', 'staging']),
     productionVersion: z.string(),
-    bumpType: z.enum(['major', 'minor', 'patch', 'pre-release']),
+    bumpType: z.enum(['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease']),
     stagingVersion: z.string().optional(),
-    buildMetadata: z.string().optional()
+    buildMetadata: z.string().optional(),
+    stagingIdentifier: z.string().default('beta'),
+    stagingBumpTypeOlderThanProd: z.enum(['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease']).default('minor')
   })
   .refine(
     data =>
@@ -26,6 +28,8 @@ export function getConfig(): z.infer<typeof configSchema> {
     productionVersion: core.getInput('production_version'),
     bumpType: core.getInput('bump_type'),
     stagingVersion: core.getInput('staging_version'),
-    buildMetadata: core.getInput('build_metadata')
+    buildMetadata: core.getInput('build_metadata'),
+    stagingIdentifier: core.getInput('staging_identifier'),
+    stagingBumpTypeOlderThanProd: core.getInput('staging_bump_type_older_than_prod')
   })
 }

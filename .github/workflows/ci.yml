@@ -39,7 +39,7 @@ jobs:
         run: npm run lint
 
   test-action:
-    name: GitHub Actions Test
+    name: GitHub Actions E2E Test
     runs-on: ubuntu-latest
 
     steps:
@@ -50,8 +50,7 @@ jobs:
       - name: Test Local Action
         id: test-action
         uses: ./
-        with:
-          milliseconds: 2000
+
 
       - name: Print Output
         id: output
